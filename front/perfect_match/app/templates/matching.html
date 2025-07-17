@@ -1,0 +1,422 @@
+{% extends 'base.html' %}
+
+{% block title %}Matching IA - Analyse{% endblock %}
+
+{% block extra_css %}
+<style>
+    .matching-container {
+        min-height: calc(100vh - 4rem);
+        background: linear-gradient(135deg, #eff6ff, #e0e7ff, #f3e8ff);
+        padding: 2rem 0;
+    }
+
+    .matching-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding-top: 2rem;
+    }
+
+    .matching-header h1 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+    }
+
+    .matching-header p {
+        font-size: 1.125rem;
+        color: #6b7280;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .matching-form {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .form-sections {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        min-height: 600px;
+    }
+
+    .form-section {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-section:first-child {
+        border-right: 1px solid #e5e7eb;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+
+    .section-icon.cv {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+
+    .section-icon.job {
+        background: #e9d5ff;
+        color: #7c3aed;
+    }
+
+    .section-header h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+    .section-description {
+        color: #6b7280;
+        margin-bottom: 1.5rem;
+        font-size: 0.875rem;
+    }
+
+    .form-textarea-large {
+        flex: 1;
+        width: 100%;
+        padding: 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.75rem;
+        font-size: 0.875rem;
+        resize: none;
+        font-family: inherit;
+        line-height: 1.5;
+        transition: border-color 0.3s;
+    }
+
+    .form-textarea-large:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-textarea-large::placeholder {
+        color: #9ca3af;
+    }
+
+    .form-actions {
+        padding: 2rem;
+        background: #f9fafb;
+        border-top: 1px solid #e5e7eb;
+        text-align: center;
+    }
+
+    .analyze-btn {
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+        color: white;
+        padding: 1rem 3rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        font-size: 1.125rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .analyze-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+    }
+
+    .analyze-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .results-section {
+        margin-top: 3rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .results-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .results-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        background: #d1fae5;
+        color: #059669;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+
+    .results-header h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+    .score-display {
+        background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .score-number {
+        font-size: 3rem;
+        font-weight: bold;
+        color: #0369a1;
+        margin-bottom: 0.5rem;
+    }
+
+    .score-label {
+        color: #0369a1;
+        font-weight: 600;
+    }
+
+    .recommendations {
+        background: #f9fafb;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+    }
+
+    .recommendations h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 1rem;
+    }
+
+    .recommendations ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .recommendations li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .recommendations li:last-child {
+        border-bottom: none;
+    }
+
+    .recommendation-icon {
+        color: #059669;
+        margin-top: 0.125rem;
+    }
+
+    .loading {
+        text-align: center;
+        padding: 2rem;
+        color: #6b7280;
+    }
+
+    .loading-spinner {
+        display: inline-block;
+        width: 2rem;
+        height: 2rem;
+        border: 3px solid #e5e7eb;
+        border-top: 3px solid #2563eb;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+        .form-sections {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-section:first-child {
+            border-right: none;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .matching-header h1 {
+            font-size: 2rem;
+        }
+        
+        .form-section {
+            padding: 1.5rem;
+        }
+        
+        .form-actions {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="matching-container">
+    <div class="container">
+        <div class="matching-header">
+            <h1>Analyse de Matching IA</h1>
+            <p>
+                Collez votre CV et l'offre d'emploi ci-dessous pour obtenir une analyse 
+                de compatibilité et des recommandations personnalisées.
+            </p>
+        </div>
+
+        <form method="post" class="matching-form" id="matchingForm">
+            {% csrf_token %}
+            
+            <div class="form-sections">
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon cv">📄</div>
+                        <h2>Votre CV</h2>
+                    </div>
+                    <p class="section-description">
+                        Copiez et collez le contenu de votre CV ici. Incluez vos expériences, 
+                        compétences, formations et toute information pertinente.
+                    </p>
+                    <textarea 
+                        name="cv_text" 
+                        class="form-textarea-large" 
+                        placeholder="Collez ici le contenu de votre CV...
+
+Exemple :
+John Doe
+Développeur Full Stack
+
+EXPÉRIENCE :
+• 3 ans chez TechCorp - Développement d'applications web
+• Maîtrise de React, Node.js, Python
+• Gestion d'équipe de 5 développeurs
+
+FORMATION :
+• Master en Informatique - Université Paris
+• Certification AWS Solutions Architect
+
+COMPÉTENCES :
+• Langages : JavaScript, Python, Java
+• Frameworks : React, Django, Express
+• Bases de données : PostgreSQL, MongoDB"
+                        required>{{ cv_text }}</textarea>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon job">💼</div>
+                        <h2>Offre d'emploi</h2>
+                    </div>
+                    <p class="section-description">
+                        Copiez et collez l'offre d'emploi qui vous intéresse. 
+                        Incluez la description du poste, les compétences requises et les responsabilités.
+                    </p>
+                    <textarea 
+                        name="job_text" 
+                        class="form-textarea-large" 
+                        placeholder="Collez ici l'offre d'emploi...
+
+Exemple :
+DÉVELOPPEUR SENIOR FULL STACK - CDI
+
+Nous recherchons un développeur expérimenté pour rejoindre notre équipe.
+
+MISSIONS :
+• Développement d'applications web modernes
+• Architecture et conception de solutions techniques
+• Encadrement d'équipe junior
+• Participation aux choix technologiques
+
+PROFIL RECHERCHÉ :
+• 3+ ans d'expérience en développement web
+• Maîtrise de React et Node.js
+• Expérience avec les bases de données relationnelles
+• Esprit d'équipe et leadership
+• Formation en informatique souhaitée
+
+TECHNOLOGIES :
+React, Node.js, PostgreSQL, AWS, Docker"
+                        required>{{ job_text }}</textarea>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="analyze-btn" id="analyzeBtn">
+                    <span>🔍</span>
+                    Analyser la compatibilité
+                </button>
+            </div>
+        </form>
+
+        {% if results %}
+        <div class="results-section">
+            <div class="results-header">
+                <div class="results-icon">✅</div>
+                <h2>Résultats de l'analyse</h2>
+            </div>
+
+            <div class="score-display">
+                <div class="score-number">{{ results.score }}%</div>
+                <div class="score-label">Score de compatibilité</div>
+            </div>
+
+            <div class="recommendations">
+                <h3>Recommandations pour améliorer votre candidature</h3>
+                <ul>
+                    {% for recommendation in results.recommendations %}
+                    <li>
+                        <span class="recommendation-icon">💡</span>
+                        <span>{{ recommendation }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+document.getElementById('matchingForm').addEventListener('submit', function() {
+    const btn = document.getElementById('analyzeBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="loading-spinner"></div> Analyse en cours...';
+});
+</script>
+{% endblock %}
