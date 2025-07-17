@@ -3,3 +3,13 @@ pydantic
 pydantic[email]
 uvicorn
 sqlmodel
+dotenv
+passlib
+pathlib
+PyJWT
+python-jose
+python-multipart
+# postgresql
+llama-cpp-python
+django
+django-webpack-loader

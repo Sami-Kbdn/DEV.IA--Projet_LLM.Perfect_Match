@@ -1,4 +1,4 @@
-from llm import generate_matching
+from back.app.services.llm import generate_matching
 
 cv = """
 Expériences : Chef de projet digital Crédit Agricole Nord de France; Conseiller clientèle Ma French Bank ; Conseiller de vente Leroy Merlin ; 

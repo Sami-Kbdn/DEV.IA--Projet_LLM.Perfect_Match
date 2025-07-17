@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from schemas.matching import MatchingRequest, MatchingResponse
 from models.matching import Matching
 from models.cv import CV
-from app.llm import generate_matching
+from services.llm import generate_matching
 
 router = APIRouter()
 
@@ -46,7 +46,7 @@ router = APIRouter()
 from fastapi import APIRouter, Depends, HTTPException
 from typing import Annotated
 from sqlmodel import Session, select
-from app.llm import generate_matching   # 👈 ton module LLM local
+from services.llm import generate_matching   # 👈 ton module LLM local
 
 router = APIRouter()
 
