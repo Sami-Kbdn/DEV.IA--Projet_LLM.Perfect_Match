@@ -11,13 +11,16 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-# from back.app.core.config import POSTGRES_USER, POSTGRES_DB, POSTGRES_HOST, POSTGRES_PORT, POSTGRES_PASSWORD
-# import sys
 
-# sys.path.append(str(Path(__file__).resolve().parents[4] / "back"))
+from back.app.core.config import POSTGRES_USER, POSTGRES_DB, POSTGRES_HOST, POSTGRES_PORT, POSTGRES_PASSWORD
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+import sys
+import os
+
+BASE_DIR = Path(__file__).resolve().parent.parent 
+
+sys.path.append(str(BASE_DIR / 'back'))
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -86,28 +89,17 @@ WSGI_APPLICATION = 'perfect_match.wsgi.application'
 
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': POSTGRES_DB,
-#         'USER': POSTGRES_USER,
-#         'PASSWORD': POSTGRES_PASSWORD,
-#         'HOST': POSTGRES_HOST,
-#         'PORT': POSTGRES_PORT,
-#     }
-# }
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Perfect_Match',
-        'USER': 'postgres',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': 5432,
+        'NAME': POSTGRES_DB,
+        'USER': POSTGRES_USER,
+        'PASSWORD': POSTGRES_PASSWORD,
+        'HOST': POSTGRES_HOST,
+        'PORT': POSTGRES_PORT,
     }
 }
+
 
 
 # Password validation

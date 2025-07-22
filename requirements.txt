@@ -3,3 +3,12 @@ pydantic
 pydantic[email]
 uvicorn
 sqlmodel
+django-cors-headers
+psycopg
+dotenv
+psycopg2
+passlib
+PyJWT
+python-jose
+groq
+requests

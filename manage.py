@@ -4,9 +4,15 @@ import os
 import sys
 
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'front')))
+
+
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'perfect_match.settings')
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "front.perfect_match.settings")
+
 
     try:
         from django.core.management import execute_from_command_line

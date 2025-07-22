@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Matching IA{% endblock %}</title>
+    <title>{% block title %}Perfect Match{% endblock %}</title>
     <style>
         * {
             margin: 0;
@@ -73,13 +73,13 @@
 
         .nav-links a {
             text-decoration: none;
-            color: #6b7280;
+            color:rgb(0, 0, 0);
             font-weight: 500;
             transition: color 0.3s;
         }
 
         .nav-links a:hover {
-            color: #2563eb;
+            color:rgb(132, 150, 190);
         }
 
         .btn {
@@ -264,16 +264,16 @@
         <div class="container">
             <nav class="nav">
                 <a href="/" class="logo">
-                    <div class="logo-icon">IA</div>
-                    Matching IA
+                    <div class="logo-icon">PM</div>
+                    Perfect Match
                 </a>
                 <ul class="nav-links">
                     {% if user.is_authenticated %}
                         <li><a href="/matching/">Matching</a></li>
                         <li><a href="/logout/">Déconnexion</a></li>
                     {% else %}
-                        <li><a href="/login/">Connexion</a></li>
-                        <li><a href="/register/" class="btn btn-primary">S'inscrire</a></li>
+                        <li><a href="/auth/login/">Connexion</a></li>
+                        <li><a href="/auth/register/" class="btn btn-primary">S'inscrire</a></li>
                     {% endif %}
                 </ul>
             </nav>

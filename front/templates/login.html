@@ -93,9 +93,28 @@
         font-size: 0.875rem;
         margin-bottom: 0.5rem;
     }
+    .auth-form input[type="text"],
+    .auth-form input[type="password"],
+    .auth-form input[type="email"] {
+        width: 100%;              /* Prend toute la largeur disponible */
+        padding: 0.75rem 1rem;   /* Plus de hauteur et d’espace intérieur */
+        font-size: 1rem;          /* Taille de texte confortable */
+        border: 1px solid #ccc;   /* Bordure claire */
+        border-radius: 0.5rem;    /* Bords arrondis */
+        box-sizing: border-box;   /* Padding + border inclus dans la largeur */
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .auth-form input[type="text"]:focus,
+    .auth-form input[type="password"]:focus,
+    .auth-form input[type="email"]:focus {
+        outline: none;
+        border-color: #2563eb;           /* Bleu au focus */
+        box-shadow: 0 0 5px #2563eb;    /* Ombre légère */
+    }
+
 </style>
 {% endblock %}
-
 {% block content %}
 <div class="auth-container">
     <div class="auth-card">
@@ -104,41 +123,31 @@
             <p>Accédez à votre compte Matching IA</p>
         </div>
 
-        <form method="post" class="auth-form">
+        <form method="post" action="{% url 'login' %}" class="auth-form">
+        {% comment %} <form method="post" action="/matching/" class="auth-form"> {% endcomment %}
+        {% comment %} <form method="post" action="/" class="auth-form"> {% endcomment %}
+
             {% csrf_token %}
-            
-            {% if form.non_field_errors %}
+
+            {% if error %}
                 <div class="form-group">
-                    <ul class="errorlist">
-                        {% for error in form.non_field_errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
+                    <div class="form-error">{{ error }}</div>
                 </div>
+
             {% endif %}
 
             <div class="form-group">
-                <label for="{{ form.username.id_for_label }}" class="form-label">
+                <label for="username" class="form-label">
                     Nom d'utilisateur ou email
                 </label>
-                {{ form.username }}
-                {% if form.username.errors %}
-                    {% for error in form.username.errors %}
-                        <div class="form-error">{{ error }}</div>
-                    {% endfor %}
-                {% endif %}
+                <input type="text" id="username" name="username" class="form-control" required>
             </div>
 
             <div class="form-group">
-                <label for="{{ form.password.id_for_label }}" class="form-label">
+                <label for="password" class="form-label">
                     Mot de passe
                 </label>
-                {{ form.password }}
-                {% if form.password.errors %}
-                    {% for error in form.password.errors %}
-                        <div class="form-error">{{ error }}</div>
-                    {% endfor %}
-                {% endif %}
+                <input type="password" id="password" name="password" class="form-control" required>
             </div>
 
             <div class="form-group">
