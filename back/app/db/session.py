@@ -10,8 +10,12 @@ from models.matching import Matching
 
 load_dotenv()
 
-password = os.getenv("PASSWORD")
-DATABASE_URL = f"postgresql://postgres:{password}@localhost:5432/Perfect_Match"
+user = os.getenv("POSTGRES_USER")
+password = os.getenv("POSTGRES_PASSWORD")
+port = os.getenv("POSTGRES_PORT")
+name = os.getenv("POSTGRES_DB")
+host = os.getenv("POSTGRES_HOST")
+DATABASE_URL = f"postgresql://{user}:{password}@{host}:{port}/{name}"
 
 engine = create_engine(DATABASE_URL, echo=True)
 

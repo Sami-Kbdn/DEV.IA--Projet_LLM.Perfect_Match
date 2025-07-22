@@ -17,7 +17,9 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from front.perfect_match.back.app.views import home_view
+# from front.perfect_match.back.app.views import home_view
+from app.views import home_view
+
 
 
 urlpatterns = [
