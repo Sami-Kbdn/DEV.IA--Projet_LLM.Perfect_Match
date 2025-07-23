@@ -1,7 +1,6 @@
-from django.shortcuts import render, redirect
 import requests
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
 from django.contrib import messages
 
 def home_view(request):
@@ -20,7 +19,6 @@ def register_view(request):
 
         print(f"Inscription : {username} / {email}")
 
-        # Vérifications basiques
         if not username or not email or not password or not password_confirm:
             return render(request, "register.html", {
                 "error_message": "Tous les champs sont obligatoires."
@@ -31,7 +29,6 @@ def register_view(request):
                 "error_message": "Les mots de passe ne correspondent pas."
             })
 
-        # Prépare les données à envoyer à FastAPI
         register_data = {
             "username": username,
             "email": email,
@@ -48,7 +45,6 @@ def register_view(request):
             if response.status_code == 200:
                 return redirect("login")
             else:
-                # Gestion d’erreur avec message reçu de l’API
                 try:
                     error_data = response.json()
                     error_message = error_data.get("detail", "Erreur lors de l'inscription.")
@@ -65,57 +61,43 @@ def register_view(request):
                 "error_message": "Impossible de contacter le serveur d'inscription."
             })
 
-    # Si GET, afficher le formulaire d'inscription
     return render(request, "register.html")
 
 @csrf_exempt
 def login_view(request):
-
     if request.method == "POST":
-        print("POST reçu")
         username = request.POST.get("username")
         password = request.POST.get("password")
-        print(f"Tentative de connexion avec : {username} / {password}")
-
-        if not username or not password:
-            print("Erreur : champs manquants")
-            return render(request, "login.html", {"error": "Champs manquants."})
 
         login_data = {"username": username, "password": password}
         url = "http://127.0.0.1:8001/auth/login/"
 
-        response = requests.post(url, json=login_data)
+        
 
-        print("Status code de la réponse FastAPI :", response.status_code)
-        print("Contenu brut de la réponse FastAPI :", response.text)
-
-        if response.status_code == 200:
-            try:
-                data = response.json()
-                print("Données JSON reçues :", data)
-                token = data.get("access_token")
-                if token:
-                    print("Token reçu, stockage en session et redirection")
-                    request.session["token"] = token
-                    request.session.save() 
-                    return redirect("load_cv")
-                else:
-                    error = "Token manquant dans la réponse."
-                    print("Erreur :", error)
-            except Exception as e:
-                error = f"Erreur JSON : {str(e)}"
-                print(error)
-        else:
-            error = "Identifiant ou mot de passe incorrect."
-            print("Erreur :", error)
-
-        return render(request, "login.html", {"error": error})
+        try:
+            response = requests.post(url, json=login_data)
+            if response.status_code == 200:
+                token = response.json().get("access_token")
+                request.session["token"] = token
+                return redirect("load_cv") 
+            else:
+                error_message = response.json().get("detail", "Erreur de connexion.")
+                return render(request, "login.html", {"error_message": error_message})
+        except requests.exceptions.RequestException:
+            return render(request, "login.html", {"error_message": "Serveur inaccessible."})
 
     return render(request, "login.html")
+
+def logout_view(request):
+    request.session.pop("token", None)
+    return redirect("/")
 
 @csrf_exempt
 def load_cv_view(request):
     print("Début de load_cv_view")
+
+    token = request.session.get("token")
+    print(f"Token récupéré : {token}")
 
     if request.method == "POST":
         print("Méthode POST détectée")
@@ -129,11 +111,9 @@ def load_cv_view(request):
             return render(request, "load_cv.html", {
                 "error_message": "Tous les champs sont obligatoires.",
                 "cv_text": cv_text,
-                "sector": sector
+                "sector": sector,
+                "token": token,  
             })
-
-        token = request.session.get("token")
-        print(f"Token récupéré : {token}")
 
         if not token:
             print("Pas de token, redirection vers login")
@@ -159,7 +139,8 @@ def load_cv_view(request):
             return render(request, "load_cv.html", {
                 "error_message": "Erreur de connexion à l'API.",
                 "cv_text": cv_text,
-                "sector": sector
+                "sector": sector,
+                "token": token,  
             })
 
         if response.status_code == 200:
@@ -170,14 +151,18 @@ def load_cv_view(request):
             return render(request, "load_cv.html", {
                 "error_message": "Erreur lors de l'envoi à l'API.",
                 "cv_text": cv_text,
-                "sector": sector
+                "sector": sector,
+                "token": token,  
             })
 
     print("Méthode GET - affichage du formulaire")
-    return render(request, "load_cv.html")
+    return render(request, "load_cv.html", {"token": token})
 
+@csrf_exempt
 def matching_view(request):
     token = request.session.get("token")
+    is_authenticated = token is not None
+
     if not token:
         messages.error(request, "Utilisateur non connecté.")
         return redirect("login")
@@ -187,7 +172,7 @@ def matching_view(request):
         "Content-Type": "application/json"
     }
 
-    data = None  # Défini par défaut
+    data = None
 
     if request.method == "POST":
         job_description = request.POST.get("job_description")
@@ -220,8 +205,10 @@ def matching_view(request):
 
     return render(request, "matching.html", {
         "user_cvs": user_cvs,
-        "matching_result": data,  # None si pas de POST ou erreur
+        "matching_result": data,
         "job_description": request.POST.get("job_description", ""),
-        "cv_id": request.POST.get("cv_id", None)
+        "cv_id": request.POST.get("cv_id", None),
+        "is_authenticated": is_authenticated,
+        "token": token,  
     })
 

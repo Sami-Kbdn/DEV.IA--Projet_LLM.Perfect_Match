@@ -288,99 +288,7 @@
     }
 </style>
 {% endblock %}
-{% comment %} 
-{% block content %}
-<div class="matching-container">
-    <div class="container">
-        <div class="matching-header">
-            <h1>Analyse de Matching IA</h1>
-            <p>
-                Sélectionnez un de vos CVs enregistrés, collez l'offre d'emploi, 
-                puis cliquez sur "Analyser la compatibilité".
-            </p>
-        </div>
 
-        <form method="post" class="matching-form" id="matchingForm">
-            {% csrf_token %}
-
-            <div class="form-sections">
-                <!-- Sélection du CV -->
-                <div class="form-section">
-                    <div class="section-header">
-                        <div class="section-icon cv">📄</div>
-                        <h2>Choisissez un CV</h2>
-                    </div>
-                    <p class="section-description">Sélectionnez l’un de vos CV enregistrés :</p>
-                    <select name="cv_id" class="form-select" required>
-                        <option value="" disabled selected>-- Sélectionner un CV --</option>
-                        {% for cv in user_cvs %}
-                            <option value="{{ cv.cv_id }}">CV #{{ cv.cv_id }} - {{ cv.cv_text|truncatewords:10 }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <!-- Offre d'emploi -->
-                <div class="form-section">
-                    <div class="section-header">
-                        <div class="section-icon job">💼</div>
-                        <h2>Offre d'emploi</h2>
-                    </div>
-                    <p class="section-description">
-                        Collez ici l'offre d'emploi qui vous intéresse.
-                    </p>
-                    <textarea 
-                        name="job_description" 
-                        class="form-textarea-large" 
-                        placeholder="Collez ici l'offre d'emploi..." 
-                        required>{{ job_description }}</textarea>
-                </div>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="analyze-btn" id="analyzeBtn">
-                    <span>🔍</span>
-                    Analyser la compatibilité
-                </button>
-            </div>
-        </form>
-
-        {% if results %}
-        <div class="results-section">
-            <div class="results-header">
-                <div class="results-icon">✅</div>
-                <h2>Résultats de l'analyse</h2>
-            </div>
-
-            <div class="score-display">
-                <div class="score-number">{{ results.score }}%</div>
-                <div class="score-label">Score de compatibilité</div>
-            </div>
-
-            <div class="recommendations">
-                <h3>Recommandations pour améliorer votre candidature</h3>
-                <ul>
-                    {% for recommendation in results.recommendations %}
-                    <li>
-                        <span class="recommendation-icon">💡</span>
-                        <span>{{ recommendation }}</span>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-        {% endif %}
-    </div>
-</div>
-
-<script>
-document.getElementById('matchingForm').addEventListener('submit', function() {
-    const btn = document.getElementById('analyzeBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<div class="loading-spinner"></div> Analyse en cours...';
-});
-</script>
-{% endblock %}
- {% endcomment %}
 {% block content %}
 <div class="matching-container">
     <div class="container">
@@ -392,78 +300,86 @@ document.getElementById('matchingForm').addEventListener('submit', function() {
             </p>
         </div>
 
-        <form method="post" class="matching-form" id="matchingForm">
-            {% csrf_token %}
+        {% if is_authenticated %}
+            <form method="post" class="matching-form" id="matchingForm">
+                {% csrf_token %}
+                
+                <div class="form-sections">
+                    <div class="form-section">
+                        <div class="section-header">
+                            <div class="section-icon cv">📄</div>
+                            <h2>Choisissez un CV</h2>
+                        </div>
+                        <p class="section-description">Sélectionnez l’un de vos CV enregistrés :</p>
+                        <select name="cv_id" class="form-select" required>
+                            <option value="" disabled selected>-- Sélectionner un CV --</option>
+                            {% for cv in user_cvs %}
+                                <option value="{{ cv.cv_id }}">CV #{{ cv.cv_id }} - {{ cv.cv_text|truncatewords:10 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="section-header">
+                            <div class="section-icon job">💼</div>
+                            <h2>Offre d'emploi</h2>
+                        </div>
+                        <p class="section-description">
+                            Copiez et collez l'offre d'emploi qui vous intéresse. 
+                            Incluez la description du poste, les compétences requises et les responsabilités.
+                        </p>
+                        <textarea 
+                            name="job_description" 
+                            class="form-textarea-large" 
+                            placeholder="Collez ici l'offre d'emploi..."
+                            required>{{ job_description }}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="analyze-btn" id="analyzeBtn">
+                        <span>🔍</span>
+                        Analyser la compatibilité
+                    </button>
+                </div>
+            </form>
+
+            {% if matching_result %}
+            <div class="results-section" style="background-color: #f9fafb; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); max-width: 600px; margin: 2rem auto;">
+            <h2 style="font-size: 1.75rem; margin-bottom: 1rem; color: #111827;">Résultats de l’analyse</h2>
             
-            <div class="form-sections">
-                <div class="form-section">
-                    <div class="section-header">
-                        <div class="section-icon cv">📄</div>
-                        <h2>Choisissez un CV</h2>
-                    </div>
-                    <p class="section-description">Sélectionnez l’un de vos CV enregistrés :</p>
-                    <select name="cv_id" class="form-select" required>
-                        <option value="" disabled selected>-- Sélectionner un CV --</option>
-                        {% for cv in user_cvs %}
-                            <option value="{{ cv.cv_id }}">CV #{{ cv.cv_id }} - {{ cv.cv_text|truncatewords:10 }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-section">
-                    <div class="section-header">
-                        <div class="section-icon job">💼</div>
-                        <h2>Offre d'emploi</h2>
-                    </div>
-                    <p class="section-description">
-                        Copiez et collez l'offre d'emploi qui vous intéresse. 
-                        Incluez la description du poste, les compétences requises et les responsabilités.
-                    </p>
-                    <textarea 
-                        name="job_description" 
-                        class="form-textarea-large" 
-                        placeholder="Collez ici l'offre d'emploi..."
-                        required>{{ job_description }}</textarea>
-                </div>
+            <div style="margin-bottom: 1.5rem;">
+                <p style="font-size: 1.2rem; color: #374151;">
+                    <strong style="color: #111827;">Score :</strong>
+                    <span style="font-weight: bold; color: {% if matching_result.score >= 70 %}#16a34a{% elif matching_result.score >= 40 %}#facc15{% else %}#dc2626{% endif %};">
+                        {{ matching_result.score }}%
+                    </span>
+                </p>
             </div>
 
-            <div class="form-actions">
-                <button type="submit" class="analyze-btn" id="analyzeBtn">
-                    <span>🔍</span>
-                    Analyser la compatibilité
-                </button>
-            </div>
-        </form>
-        {% if matching_result %}
-            <div class="results-section">
-                <h2>Résultats de l'analyse</h2>
-                <p><strong>Score :</strong> {{ matching_result.score }}%</p>
-                <p><strong>Feedback :</strong> {{ matching_result.feedback }}</p>
-            </div>
-        {% endif %}
-
-        {% comment %} {% if results %}
-        <div class="results-section" style="margin-top: 30px; padding: 15px; border: 1px solid #4caf50; border-radius: 8px; background-color: #e8f5e9;">
-            <h2>Résultats de l'analyse</h2>
-
-            <div class="score-display" style="font-size: 2em; font-weight: bold; color: #388e3c;">
-                Score : {{ results.score }}%
-            </div>
-
-            <div class="recommendations" style="margin-top: 15px;">
-                <h3>Feedback</h3>
-                <p>{{ results.feedback }}</p>
+            <div>
+                <p style="font-size: 1.1rem; color: #374151;">
+                    <strong style="color: #111827;">Feedback :</strong><br>
+                    <span style="display: inline-block; margin-top: 0.5rem;">
+                        {{ matching_result.feedback }}
+                    </span>
+                </p>
             </div>
         </div>
-        {% endif %} {% endcomment %}
+
+            {% endif %}
+        {% else %}
+            <p>Vous devez être connecté pour utiliser cette fonctionnalité. <a href="{% url 'login' %}">Connectez-vous ici</a>.</p>
+        {% endif %}
     </div>
 </div>
 
 <script>
-document.getElementById('matchingForm').addEventListener('submit', function() {
+document.getElementById('matchingForm')?.addEventListener('submit', function() {
     const btn = document.getElementById('analyzeBtn');
     btn.disabled = true;
     btn.innerHTML = '<div class="loading-spinner"></div> Analyse en cours...';
 });
 </script>
 {% endblock %}
+

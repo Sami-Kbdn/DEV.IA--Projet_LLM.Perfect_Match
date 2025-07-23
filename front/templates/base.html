@@ -269,8 +269,12 @@
                     Perfect Match
                 </a>
                 <ul class="nav-links">
-                    {% if user.is_authenticated %}
-                        <li><a href="/matching/">Matching</a></li>
+                    {% if token %}
+                        {% if request.resolver_match.url_name == "load_cv" %}
+                            <li><a href="{% url 'matching' %}">Matching</a></li>
+                        {% elif request.resolver_match.url_name == "matching" %}
+                            <li><a href="{% url 'load_cv' %}">Charger un CV</a></li>
+                        {% endif %}
                         <li><a href="/logout/">Déconnexion</a></li>
                     {% else %}
                         <li><a href="/auth/login/">Connexion</a></li>
@@ -296,6 +300,7 @@
         
         {% block content %}{% endblock %}
     </main>
+
 
     {% block extra_js %}{% endblock %}
 </body>

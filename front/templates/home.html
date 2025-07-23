@@ -178,7 +178,6 @@
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
 <section class="hero">
     <div class="container text-center">
         <h1>
@@ -191,16 +190,14 @@
         </p>
         <div class="hero-buttons">
             {% if user.is_authenticated %}
-                <a href="/matching/" class="btn btn-gradient">Commencer le matching</a>
+                <a href="auth/matching/" class="btn btn-gradient">Commencer le matching</a>
             {% else %}
-                <a href="/register/" class="btn btn-gradient">Analyser mon CV</a>
-                <a href="/login/" class="btn btn-secondary">Se connecter</a>
+                <a href="auth/login/" class="btn btn-gradient">Analyser mon CV</a>
             {% endif %}
         </div>
     </div>
 </section>
 
-<!-- Stats Section -->
 <section class="stats">
     <div class="container">
         <div class="stats-grid">
@@ -220,7 +217,6 @@
     </div>
 </section>
 
-<!-- Features Section -->
 <section class="features">
     <div class="container">
         <h2>Une IA qui comprend vos ambitions</h2>
@@ -259,17 +255,16 @@
     </div>
 </section>
 
-<!-- CTA Section -->
 <section class="cta">
     <div class="container">
         <h2>Prêt à transformer votre recherche d'emploi ?</h2>
         <p>
             Rejoignez des milliers de candidats qui ont déjà optimisé leur recherche avec notre IA
         </p>
-        {% if user.is_authenticated %}
-            <a href="/matching/" class="btn">Commencer maintenant</a>
+        {% if token %}
+            <a href="auth/matching/" class="btn">Commencer maintenant</a>
         {% else %}
-            <a href="/register/" class="btn">Commencer maintenant</a>
+            <a href="auth/register/" class="btn">Commencer maintenant</a>
         {% endif %}
     </div>
 </section>
