@@ -21,6 +21,7 @@ router = APIRouter()
 async def create_matching(
     data: MatchingRequest,
     user: Annotated[str, Depends(get_user)],
+    # user: Annotated[User, Depends(get_user)]
     session: Session = Depends(get_session)
 ):
     # Vérifie que le CV existe et appartient à l'utilisateur

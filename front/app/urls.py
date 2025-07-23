@@ -1,11 +1,11 @@
 from django.urls import path
-from .views import register_view, login_view, load_cv_view
+from .views import register_view, login_view, load_cv_view, matching_view
 from django.views.generic import TemplateView
 from django.urls import path
 # matching_views, LogoutView, LoginView,
 
 urlpatterns = [
-    # path('matching/', matching_view, name='matching'),
+    path('matching/', matching_view, name='matching'),
     path('load_cv/', load_cv_view, name='load_cv'),
     path('auth/register/', register_view, name='register'),
     path("auth/login/", login_view, name="login"),

@@ -288,91 +288,51 @@
     }
 </style>
 {% endblock %}
-
+{% comment %} 
 {% block content %}
 <div class="matching-container">
     <div class="container">
         <div class="matching-header">
             <h1>Analyse de Matching IA</h1>
             <p>
-                Collez votre CV et l'offre d'emploi ci-dessous pour obtenir une analyse 
-                de compatibilité et des recommandations personnalisées.
+                Sélectionnez un de vos CVs enregistrés, collez l'offre d'emploi, 
+                puis cliquez sur "Analyser la compatibilité".
             </p>
         </div>
 
         <form method="post" class="matching-form" id="matchingForm">
             {% csrf_token %}
-            
+
             <div class="form-sections">
+                <!-- Sélection du CV -->
                 <div class="form-section">
                     <div class="section-header">
                         <div class="section-icon cv">📄</div>
-                        <h2>Votre CV</h2>
+                        <h2>Choisissez un CV</h2>
                     </div>
-                    <p class="section-description">
-                        Copiez et collez le contenu de votre CV ici. Incluez vos expériences, 
-                        compétences, formations et toute information pertinente.
-                    </p>
-                    <textarea 
-                        name="cv_text" 
-                        class="form-textarea-large" 
-                        placeholder="Collez ici le contenu de votre CV...
-
-Exemple :
-John Doe
-Développeur Full Stack
-
-EXPÉRIENCE :
-• 3 ans chez TechCorp - Développement d'applications web
-• Maîtrise de React, Node.js, Python
-• Gestion d'équipe de 5 développeurs
-
-FORMATION :
-• Master en Informatique - Université Paris
-• Certification AWS Solutions Architect
-
-COMPÉTENCES :
-• Langages : JavaScript, Python, Java
-• Frameworks : React, Django, Express
-• Bases de données : PostgreSQL, MongoDB"
-                        required>{{ cv_text }}</textarea>
+                    <p class="section-description">Sélectionnez l’un de vos CV enregistrés :</p>
+                    <select name="cv_id" class="form-select" required>
+                        <option value="" disabled selected>-- Sélectionner un CV --</option>
+                        {% for cv in user_cvs %}
+                            <option value="{{ cv.cv_id }}">CV #{{ cv.cv_id }} - {{ cv.cv_text|truncatewords:10 }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
 
+                <!-- Offre d'emploi -->
                 <div class="form-section">
                     <div class="section-header">
                         <div class="section-icon job">💼</div>
                         <h2>Offre d'emploi</h2>
                     </div>
                     <p class="section-description">
-                        Copiez et collez l'offre d'emploi qui vous intéresse. 
-                        Incluez la description du poste, les compétences requises et les responsabilités.
+                        Collez ici l'offre d'emploi qui vous intéresse.
                     </p>
                     <textarea 
-                        name="job_text" 
+                        name="job_description" 
                         class="form-textarea-large" 
-                        placeholder="Collez ici l'offre d'emploi...
-
-Exemple :
-DÉVELOPPEUR SENIOR FULL STACK - CDI
-
-Nous recherchons un développeur expérimenté pour rejoindre notre équipe.
-
-MISSIONS :
-• Développement d'applications web modernes
-• Architecture et conception de solutions techniques
-• Encadrement d'équipe junior
-• Participation aux choix technologiques
-
-PROFIL RECHERCHÉ :
-• 3+ ans d'expérience en développement web
-• Maîtrise de React et Node.js
-• Expérience avec les bases de données relationnelles
-• Esprit d'équipe et leadership
-• Formation en informatique souhaitée
-
-TECHNOLOGIES :
-React, Node.js, PostgreSQL, AWS, Docker"
-                        required>{{ job_text }}</textarea>
+                        placeholder="Collez ici l'offre d'emploi..." 
+                        required>{{ job_description }}</textarea>
                 </div>
             </div>
 
@@ -409,6 +369,93 @@ React, Node.js, PostgreSQL, AWS, Docker"
             </div>
         </div>
         {% endif %}
+    </div>
+</div>
+
+<script>
+document.getElementById('matchingForm').addEventListener('submit', function() {
+    const btn = document.getElementById('analyzeBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="loading-spinner"></div> Analyse en cours...';
+});
+</script>
+{% endblock %}
+ {% endcomment %}
+{% block content %}
+<div class="matching-container">
+    <div class="container">
+        <div class="matching-header">
+            <h1>Analyse de Matching IA</h1>
+            <p>
+                Collez votre CV et l'offre d'emploi ci-dessous pour obtenir une analyse 
+                de compatibilité et des recommandations personnalisées.
+            </p>
+        </div>
+
+        <form method="post" class="matching-form" id="matchingForm">
+            {% csrf_token %}
+            
+            <div class="form-sections">
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon cv">📄</div>
+                        <h2>Choisissez un CV</h2>
+                    </div>
+                    <p class="section-description">Sélectionnez l’un de vos CV enregistrés :</p>
+                    <select name="cv_id" class="form-select" required>
+                        <option value="" disabled selected>-- Sélectionner un CV --</option>
+                        {% for cv in user_cvs %}
+                            <option value="{{ cv.cv_id }}">CV #{{ cv.cv_id }} - {{ cv.cv_text|truncatewords:10 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon job">💼</div>
+                        <h2>Offre d'emploi</h2>
+                    </div>
+                    <p class="section-description">
+                        Copiez et collez l'offre d'emploi qui vous intéresse. 
+                        Incluez la description du poste, les compétences requises et les responsabilités.
+                    </p>
+                    <textarea 
+                        name="job_description" 
+                        class="form-textarea-large" 
+                        placeholder="Collez ici l'offre d'emploi..."
+                        required>{{ job_description }}</textarea>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="analyze-btn" id="analyzeBtn">
+                    <span>🔍</span>
+                    Analyser la compatibilité
+                </button>
+            </div>
+        </form>
+        {% if matching_result %}
+            <div class="results-section">
+                <h2>Résultats de l'analyse</h2>
+                <p><strong>Score :</strong> {{ matching_result.score }}%</p>
+                <p><strong>Feedback :</strong> {{ matching_result.feedback }}</p>
+            </div>
+        {% endif %}
+
+        {% comment %} {% if results %}
+        <div class="results-section" style="margin-top: 30px; padding: 15px; border: 1px solid #4caf50; border-radius: 8px; background-color: #e8f5e9;">
+            <h2>Résultats de l'analyse</h2>
+
+            <div class="score-display" style="font-size: 2em; font-weight: bold; color: #388e3c;">
+                Score : {{ results.score }}%
+            </div>
+
+            <div class="recommendations" style="margin-top: 15px;">
+                <h3>Feedback</h3>
+                <p>{{ results.feedback }}</p>
+            </div>
+        </div>
+        {% endif %} {% endcomment %}
     </div>
 </div>
 
