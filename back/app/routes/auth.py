@@ -1,16 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
-from schemas.user import UserCreate, UserRead
-from schemas.auth import Token
-from models.user import User
-from db.session import get_session
-from core.security import get_password_hash, verify_password
-from utils.jwt_handler import oauth2_scheme
-from fastapi.security import OAuth2PasswordRequestForm
+from app.schemas.user import UserCreate, UserRead
+from app.schemas.auth import Token
+from app.models.user import User
+from app.db.session import get_session
+from app.core.security import get_password_hash, verify_password
 from datetime import datetime, timedelta, timezone
-from core.config import SECRET_KEY, ALGORITHM
+from app.core.config import SECRET_KEY, ALGORITHM
 import jwt
-from schemas.auth import AuthData
+from app.schemas.auth import AuthData
 
 router = APIRouter()
 
@@ -33,7 +31,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 90
 
 @router.post("/login", response_model=Token)
 def login(
-    # form: OAuth2PasswordRequestForm = Depends(), 
     credentials: AuthData,
     session: Session = Depends(get_session)
 ):

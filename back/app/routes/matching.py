@@ -1,19 +1,13 @@
-from sqlmodel import Session, select
-from db.session import get_session
-from utils.jwt_handler import get_user
-from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException
-from schemas.matching import MatchingRequest, MatchingResponse
-from models.matching import Matching
-from models.cv import CV
-from llm import generate_matching
-
-router = APIRouter()
-
 from fastapi import APIRouter, Depends, HTTPException
 from typing import Annotated
 from sqlmodel import Session, select
-from llm import generate_matching  
+from app.db.session import get_session
+from app.utils.jwt_handler import get_user
+from app.schemas.matching import MatchingRequest, MatchingResponse
+from app.models.matching import Matching
+from app.models.cv import CV
+from llm.llm_matching import generate_matching
+
 
 router = APIRouter()
 
@@ -21,10 +15,8 @@ router = APIRouter()
 async def create_matching(
     data: MatchingRequest,
     user: Annotated[str, Depends(get_user)],
-    # user: Annotated[User, Depends(get_user)]
     session: Session = Depends(get_session)
 ):
-    # Vérifie que le CV existe et appartient à l'utilisateur
     load_cv = session.exec(
         select(CV).where((CV.cv_id == data.cv_id) & (CV.user_id == user.id))
     ).first()

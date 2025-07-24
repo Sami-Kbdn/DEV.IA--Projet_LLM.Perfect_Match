@@ -1,10 +1,10 @@
 from sqlmodel import Session
-from db.session import get_session
-from utils.jwt_handler import get_user
+from app.db.session import get_session
+from app.utils.jwt_handler import get_user
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, status
-from schemas.load_cv import CVCreate, CVRead
-from models.cv import CV
+from fastapi import APIRouter, Depends
+from app.schemas.load_cv import CVCreate, CVRead
+from app.models.cv import CV
 
 router = APIRouter()
 

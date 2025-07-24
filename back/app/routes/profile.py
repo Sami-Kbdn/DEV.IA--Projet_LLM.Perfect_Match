@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from typing import Annotated
-from app.api.db.transaction import get_user
+from app.utils.jwt_handler import get_user
 
 router = APIRouter()
 

@@ -10,7 +10,6 @@ class UserCreate(UserBase):
 
 class UserRead(UserBase):
     id: int
-    # is_active: bool
 
 class UserUpdate(BaseModel):
     username: Optional[str]

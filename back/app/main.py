@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-# from app.api.v1.endpoints import auth, users
-from db.session import engine, creation
+from app.db.session import engine, creation
 from sqlmodel import SQLModel
-from routes import letter, auth, matching, load_cv, check_cv
+from app.routes import letter, auth, matching, load_cv, check_cv
 
 app = FastAPI(title="fastapi")
 

@@ -2,9 +2,9 @@ from sqlmodel import SQLModel, create_engine, Session
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-from models.user import User
-from models.cv import CV
-from models.matching import Matching
+from app.models.user import User
+from app.models.cv import CV
+from app.models.matching import Matching
 # from models.job import Job
 # from models.letter import Letter
 

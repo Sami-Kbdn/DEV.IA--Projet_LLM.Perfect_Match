@@ -1,11 +1,10 @@
 from datetime import datetime, timedelta
-import jwt
-from core.config import SECRET_KEY, ALGORITHM
-from models.user import User
+from app.core.config import SECRET_KEY, ALGORITHM
+from app.models.user import User
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session, select
-from db.session import get_session
+from app.db.session import get_session
 from jose import JWTError, jwt
 from typing import Optional 
 
