@@ -68,27 +68,28 @@ Dossier `Projet_LLM` (branche `django`) contient :
 5. Ouvrir l’application dans votre navigateur à l’adresse :
 
    ```
-   http://127.0.0.1:8000/ask
+   http://127.0.0.1:8000/
    ```
 
 ---
 
 ## ⚙️ Fonctionnalités
 
-- **Poser une question** via un formulaire web.
-- **Appel à un LLM** (OpenAI/GPT, modèle Hugging Face, …).
+- **Enregister un CV**
+- **Appel à un LLM** (LLAMA).
 - **Matching intelligent** :
-  - Génération de plusieurs réponses candidates,
-  - Score de similarité (cosine, embeddings…),
-  - Sélection de la réponse la plus pertinente.
-- **Historique des requêtes** avec affichage des questions + réponses.
-- **Interface propre et responsive** (HTML + CSS minimalistes).
+  - Génération un score de matching,
+  - Rédaction d'un feedback pour identifier vos points forts et repérer les axes à améliorer afin d’augmenter vos chances de sélection.
+- **Historique des requêtes** avec affichage des CV enregistrés.
+- **Interface propre et responsive** (React).
 
 ---
 
 ## 🖼️ Exemples de résultat
 
-*Interface montrant la question posée, la réponse la mieux ajustée et l’historique des échanges*
+<p align="center">
+  <img src="demo.png" alt="Démonstration de l'application" width="600"/>
+</p>
 
 ---
 
@@ -105,7 +106,6 @@ Dossier `Projet_LLM` (branche `django`) contient :
 
 - **Taux de pertinence** : proportion de réponses jugées « correctes » ou « très pertinentes » lors de tests utilisateurs.
 - **Temps de réponse** : latence moyenne (requête → réponse affichée).
-- **Qualité du code** : outils comme `flake8`, couverture test (s’il y a des tests).
 - **Expérience utilisateur** : retours sur l’ergonomie, fluidité de navigation.
 
 ---
@@ -118,10 +118,10 @@ Ce projet est publié sous la licence **MIT**. Voir le fichier [LICENSE](LICENSE
 
 ## 👨‍💻 Auteurs
 
-**Sami Kbdn**\
+**Sami Kabdani**\
 &#x20;&#x20;
 
 ---
 
-**Contact** : Sami Kbdn – [[ton\_email@example.com](mailto\:ton_email@example.com)] *(ajuster si besoin)*
+**Contact** : Sami Kabdani – [[samikabdani.pro@gmail.com](mailto\:samikabdani.pro@gmail.com)] 
 
