@@ -35,7 +35,7 @@ def register_view(request):
             "password": password,
         }
 
-        url = "http://127.0.0.1:8001/auth/register/"
+        url = "http://127.0.0.1:8000/auth/register/"
 
         try:
             response = requests.post(url, json=register_data)
@@ -70,7 +70,7 @@ def login_view(request):
         password = request.POST.get("password")
 
         login_data = {"username": username, "password": password}
-        url = "http://127.0.0.1:8001/auth/login/"
+        url = "http://127.0.0.1:8000/auth/login/"
 
         
 
@@ -132,7 +132,7 @@ def load_cv_view(request):
         print("Données envoyées à FastAPI :", data)
 
         try:
-            response = requests.post("http://127.0.0.1:8001/load_cv/", json=data, headers=headers)
+            response = requests.post("http://127.0.0.1:8000/load_cv/", json=data, headers=headers)
             print("Réponse FastAPI :", response.status_code, response.text)
         except Exception as e:
             print("Erreur lors de la requête à FastAPI :", e)
@@ -184,7 +184,7 @@ def matching_view(request):
         }
 
         try:
-            response = requests.post("http://127.0.0.1:8001/matching/", json=payload, headers=headers)
+            response = requests.post("http://127.0.0.1:8000/matching/", json=payload, headers=headers)
             if response.status_code == 200:
                 data = response.json()
             else:
@@ -193,7 +193,7 @@ def matching_view(request):
             messages.error(request, "Erreur de connexion à l'API")
 
     try:
-        response = requests.get("http://127.0.0.1:8001/check_cv/", headers=headers)
+        response = requests.get("http://127.0.0.1:8000/check_cv/", headers=headers)
         if response.status_code == 200:
             user_cvs = response.json()
         else:

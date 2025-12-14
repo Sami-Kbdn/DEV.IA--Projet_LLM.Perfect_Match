@@ -1,0 +1,11 @@
+Django>=4.0
+django-cors-headers
+gunicorn
+psycopg2-binary>=2.9
+python-dotenv
+requests
+PyJWT
+python-jose
+passlib
+groq
+
